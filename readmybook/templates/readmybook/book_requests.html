@@ -1,0 +1,398 @@
+{% extends 'readmybook/base.html' %}
+{% load static %}
+{% block title %}Book Requests{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="content-box-received">
+            <div class="heading-box">Received Requests</div>
+            <div class="inside-requestspage">
+                {% for req in rreceived %}
+                    {% if req.status != 'completed' %}
+                        {% if forloop.last %}
+                            <div class="indi-req-box mb-3">
+                                <div class="row">
+                                    <div class="col-2">
+                                        <img class="reqbookimg" src="{{ req.book.book.image.url }}" alt="">
+                                        <img class="reqbyimg rounded-circle"
+                                             src="{{ req.request_by.profile.image.url }}"
+                                             alt="">
+                                    </div>
+                                    <div class="col">
+                                        <div class="text-req-indi"><b><a class="text-links"
+                                                                         href="{% url 'profile' req.request_by.username %}">{{ req.request_by.profile.firstName }} {{ req.request_by.profile.lastName }}</a></b>
+                                            has requested the book
+                                            <b><a class="text-links"
+                                                  href="{% url 'book-page' req.book.book.pk %}">'{{ req.book.book.name }}'</a></b>
+                                        </div>
+                                        <div id="req-guide{{ req.pk }}" class="req-guide-message"></div>
+                                        <div class="req-buttons">
+                                            {% if req.status == 'returned-pen' %}
+                                                <button id="return-button{{ req.pk }}" class="returned-bookr">
+                                                    Book Returned
+                                                </button>
+                                                <script>
+                                                    $("#req-guide{{ req.pk }}").text("Click 'Book Returned' once you've received the book")
+                                                </script>
+                                                <script>
+                                                    $("#return-button{{ req.pk }}").show()
+                                                </script>
+                                            {% endif %}
+                                            <button id="return-button{{ req.pk }}" class="returned-bookr">Book Returned
+                                            </button>
+                                            <script>
+                                                $('#return-button{{ req.pk }}').click(function () {
+                                                    $.ajax({
+                                                        type: 'GET',
+                                                        url: "{% url 'req-rec-back' %}",
+                                                        data: {'reqid':{{ req.pk }}},
+                                                        success: function (response) {
+                                                            $('#return-button{{ req.pk }}').hide();
+                                                            $('#cancel-req{{ req.pk }}').hide();
+                                                            $('#req-guide{{ req.pk }}').text("Book was read and returned to you. Keep reading!");
+                                                            console.log("Book received back")
+                                                        },
+                                                        error: function (response) {
+                                                            console.log('error')
+                                                        }
+                                                    })
+                                                })
+                                            </script>
+                                            {% if req.status == 'received-pen' %}
+                                                <span id="accpt-txt{{ req.pk }}" class="accepted-text">Accepted</span>
+                                                <div id='reqstatus{{ req.pk }}'
+                                                     class="reqstatus">{{ req.status }}</div>
+                                                <script>
+                                                    $("#req-guide{{ req.pk }}").text("{{ req.request_by.profile.firstName }} will contact you soon!")
+
+                                                </script>
+                                                <script>
+                                                    $("#accpt-txt{{ req.pk }}").show()
+                                                </script>
+                                            {% endif %}
+                                            <span id="accpt-txt{{ req.pk }}" class="accepted-text">Accepted</span>
+                                            {% if req.status == 'pending' %}
+                                                <button id="accept-button{{ req.pk }}" class="accept-bookr">Accept
+                                                </button>
+                                                <script>
+                                                    $("#accept-button{{ req.pk }}").show()
+                                                    $("#accept-button{{ req.pk }}").click(function () {
+                                                        $.ajax({
+                                                            type: 'GET',
+                                                            url: "{% url 'req-accepted' %}",
+                                                            data: {'reqid':{{req.pk}}},
+                                                            success: function (response) {
+                                                                $("#accept-button{{ req.pk }}").hide();
+                                                                console.log("book accepted");
+                                                                $("#accpt-txt{{ req.pk }}").show();
+                                                                $('#req-guide{{ req.pk }}').text("{{ req.request_by.profile.firstName }} will contact you soon!");
+
+                                                            },
+                                                            error: function (response) {
+
+                                                            }
+                                                        })
+                                                    })
+                                                </script>
+                                            {% endif %}
+                                            <button id='cancel-req{{ req.pk }}' class="cancel-bookr">Cancel</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="indi-req-box mb-3">
+                                <div class="row">
+                                    <div class="col-2">
+                                        <img class="reqbookimg" src="{{ req.book.book.image.url }}" alt="">
+                                        <img class="reqbyimg rounded-circle"
+                                             src="{{ req.request_by.profile.image.url }}"
+                                             alt="">
+                                    </div>
+                                    <div class="col">
+                                        <div class="text-req-indi"><b><a class="text-links"
+                                                                         href="{% url 'profile' req.request_by.username %}">{{ req.request_by.profile.firstName }} {{ req.request_by.profile.lastName }}</a></b>
+                                            has requested the book
+                                            <b><a class="text-links"
+                                                  href="{% url 'book-page' req.book.book.pk %}">'{{ req.book.book.name }}'</a></b>
+                                        </div>
+                                        <div id="req-guide{{ req.pk }}" class="req-guide-message"></div>
+                                        <div class="req-buttons">
+                                            {% if req.status == 'returned-pen' %}
+                                                <button id="return-button{{ req.pk }}" class="returned-bookr">
+                                                    Book Returned
+                                                </button>
+                                                <script>
+                                                    $("#req-guide{{ req.pk }}").text("Click 'Book Returned' once you've received the book")
+                                                </script>
+                                                <script>
+                                                    $("#return-button{{ req.pk }}").show()
+                                                </script>
+                                            {% endif %}
+                                            <button id="return-button{{ req.pk }}" class="returned-bookr">Book Returned
+                                            </button>
+                                            <script>
+                                                $('#return-button{{ req.pk }}').click(function () {
+                                                    $.ajax({
+                                                        type: 'GET',
+                                                        url: "{% url 'req-rec-back' %}",
+                                                        data: {'reqid':{{ req.pk }}},
+                                                        success: function (response) {
+                                                            $('#return-button{{ req.pk }}').hide();
+                                                            $('#cancel-req{{ req.pk }}').hide();
+                                                            $('#req-guide{{ req.pk }}').text("Book was read and returned to you. Keep reading!");
+                                                            console.log("Book received back")
+                                                        },
+                                                        error: function (response) {
+                                                            console.log('error')
+                                                        }
+                                                    })
+                                                })
+                                            </script>
+                                            {% if req.status == 'received-pen' %}
+                                                <span id="accpt-txt{{ req.pk }}" class="accepted-text">Accepted</span>
+                                                <div id='reqstatus{{ req.pk }}'
+                                                     class="reqstatus">{{ req.status }}</div>
+                                                <script>
+                                                    $("#req-guide{{ req.pk }}").text("{{ req.request_by.profile.firstName }} will contact you soon!")
+
+                                                </script>
+                                                <script>
+                                                    $("#accpt-txt{{ req.pk }}").show()
+                                                </script>
+                                            {% endif %}
+                                            <span id="accpt-txt{{ req.pk }}" class="accepted-text">Accepted</span>
+                                            {% if req.status == 'pending' %}
+                                                <button id="accept-button{{ req.pk }}" class="accept-bookr">Accept
+                                                </button>
+                                                <script>
+                                                    $("#accept-button{{ req.pk }}").show()
+                                                    $("#accept-button{{ req.pk }}").click(function () {
+                                                        $.ajax({
+                                                            type: 'GET',
+                                                            url: "{% url 'req-accepted' %}",
+                                                            data: {'reqid':{{req.pk}}},
+                                                            success: function (response) {
+                                                                $("#accept-button{{ req.pk }}").hide();
+                                                                console.log("book accepted");
+                                                                $("#accpt-txt{{ req.pk }}").show();
+                                                                $('#req-guide{{ req.pk }}').text("{{ req.request_by.profile.firstName }} will contact you soon!");
+
+                                                            },
+                                                            error: function (response) {
+
+                                                            }
+                                                        })
+                                                    })
+                                                </script>
+                                            {% endif %}
+                                            <button id='cancel-req{{ req.pk }}' class="cancel-bookr">Cancel</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr class="mr-5">
+                        {% endif %}
+                    {% endif %}
+
+                    <script>
+                        $("#cancel-req{{ req.pk }}").click(function () {
+                            $.ajax({
+                                type: 'GET',
+                                url: "{% url 'cancel-request' %}",
+                                data: {'reqid':{{ req.pk }}},
+                                success: function (response) {
+                                    $('#return-button{{ req.pk }}').hide();
+                                    $('#confirm-pend-button{{ req.pk }}').hide();
+                                    $('#pending-button{{ req.pk }}').hide();
+                                    $('#accpt-txt{{ req.pk }}').hide();
+                                    $('#accept-button{{ req.pk }}').hide();
+                                    $('#cancel-req{{ req.pk }}').hide();
+                                    $('#req-guide{{ req.pk }}').text("Request has been cancelled");
+                                }
+                            })
+
+                        })
+                    </script>
+                {% empty %}
+                    <div class="empty-message-req">No requests received</div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="content-box-sent">
+            <div class="heading-box">Sent Requests</div>
+            <div class="inside-requestspage">
+                {% for req in rsent %}
+                    {% if req.status != 'completed' %}
+                        {% if forloop.last %}
+                            <div class="indi-req-box mb-3">
+                                <div class="row">
+                                    <div class="col-2">
+                                        <img class="reqbookimg" src="{{ req.book.book.image.url }}" alt="">
+                                        <img class="reqbyimg rounded-circle"
+                                             src="{{ req.request_to.profile.image.url }}"
+                                             alt="">
+                                    </div>
+                                    <div class="col">
+                                        <div class="text-req-indi">You have requested <b><a class="text-links"
+                                                                                            href="{% url 'profile' req.request_to.username %}">{{ req.request_to.profile.firstName }} {{ req.request_to.profile.lastName }}</a></b>
+                                            the book
+                                            <b><a class="text-links"
+                                                  href="{% url 'book-page' req.book.book.pk %}">'{{ req.book.book.name }}'</a></b>
+                                        </div>
+                                        <div id="req-guide{{ req.pk }}" class="req-guide-message"></div>
+                                        <div class="req-buttons">
+                                            {% if req.status == 'returned-pen' %}
+                                                    <span id='received-text{{ req.pk }}'class="accepted-text">Book Received</span>
+                                                    <script>
+                                                        $("#req-guide{{ req.pk }}").text("Happy reading! Remember to return the book on time!")
+                                                    </script>
+                                                <script>
+                                                    $("#received-text{{ req.pk }}").show()
+                                                </script>
+                                            {% endif %}
+                                            {% if req.status == 'received-pen' %}
+                                                    <button id="received-button{{ req.pk }}" class="received-bookr">
+                                                        Received
+                                                    </button>
+                                                    <div id='reqstatus{{ req.pk }}'
+                                                         class="reqstatus">{{ req.status }}</div>
+                                                    <script>
+                                                        $("#req-guide{{ req.pk }}").text("Click 'Received' once you've received the book")
+                                                    </script>
+                                                <script>
+                                                    $("#received-button{{ req.pk }}").show()
+                                                </script>
+                                            {% endif %}
+                                        <span id='received-text{{ req.pk }}'class="accepted-text">Book Received</span>
+                                            <script>
+                                                $('#received-button{{ req.pk }}').click(function () {
+                                                    $.ajax({
+                                                        type: 'GET',
+                                                        url: "{% url 'req-receive' %}",
+                                                        data: {'reqid':{{ req.pk }}},
+                                                        success: function (response) {
+                                                                $('#received-button{{ req.pk }}').hide();
+                                                                $("#received-text{{ req.pk }}").show()
+                                                                $('#req-guide{{ req.pk }}').text("Happy reading! Remember to return the book on time!");
+                                                                console.log("Book received")
+                                                        },
+                                                        error: function (response) {
+                                                            console.log('error')
+                                                        }
+                                                    })
+                                                })
+                                            </script>
+                                            {% if req.status == 'pending' %}
+                                                <button id="pending-button{{ req.pk }}" class="pending-bookr" disabled>
+                                                    Pending
+                                                </button>
+                                                <script>
+                                                    $("#pending-button{{ req.pk }}").show()
+                                                </script>
+                                            {% endif %}
+                                            <button id='cancel-req{{ req.pk }}' class="cancel-bookr">Cancel</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="indi-req-box mb-3">
+                                <div class="row">
+                                    <div class="col-2">
+                                        <img class="reqbookimg" src="{{ req.book.book.image.url }}" alt="">
+                                        <img class="reqbyimg rounded-circle"
+                                             src="{{ req.request_to.profile.image.url }}"
+                                             alt="">
+                                    </div>
+                                    <div class="col">
+                                        <div class="text-req-indi">You have requested <b><a class="text-links"
+                                                                                            href="{% url 'profile' req.request_to.username %}">{{ req.request_to.profile.firstName }} {{ req.request_to.profile.lastName }}</a></b>
+                                            the book
+                                            <b><a class="text-links"
+                                                  href="{% url 'book-page' req.book.book.pk %}">'{{ req.book.book.name }}'</a></b>
+                                        </div>
+                                        <div id="req-guide{{ req.pk }}" class="req-guide-message"></div>
+                                        <div class="req-buttons">
+                                            {% if req.status == 'returned-pen' %}
+                                                    <span id='received-text{{ req.pk }}'class="accepted-text">Book Received</span>
+                                                    <script>
+                                                        $("#req-guide{{ req.pk }}").text("Happy reading! Remember to return the book on time!")
+                                                    </script>
+                                                <script>
+                                                    $("#received-text{{ req.pk }}").show()
+                                                </script>
+                                            {% endif %}
+                                            {% if req.status == 'received-pen' %}
+                                                    <button id="received-button{{ req.pk }}" class="received-bookr">
+                                                        Received
+                                                    </button>
+                                                    <div id='reqstatus{{ req.pk }}'
+                                                         class="reqstatus">{{ req.status }}</div>
+                                                    <script>
+                                                        $("#req-guide{{ req.pk }}").text("Click 'Received' once you've received the book")
+                                                    </script>
+                                                <script>
+                                                    $("#received-button{{ req.pk }}").show()
+                                                </script>
+                                            {% endif %}
+                                        <span id='received-text{{ req.pk }}'class="accepted-text">Book Received</span>
+                                            <script>
+                                                $('#received-button{{ req.pk }}').click(function () {
+                                                    $.ajax({
+                                                        type: 'GET',
+                                                        url: "{% url 'req-receive' %}",
+                                                        data: {'reqid':{{ req.pk }}},
+                                                        success: function (response) {
+                                                                $('#received-button{{ req.pk }}').hide();
+                                                                $("#received-text{{ req.pk }}").show()
+                                                                $('#req-guide{{ req.pk }}').text("Happy reading! Remember to return the book on time!");
+                                                                console.log("Book received")
+                                                        },
+                                                        error: function (response) {
+                                                            console.log('error')
+                                                        }
+                                                    })
+                                                })
+                                            </script>
+                                            {% if req.status == 'pending' %}
+                                                <button id="pending-button{{ req.pk }}" class="pending-bookr" disabled>
+                                                    Pending
+                                                </button>
+                                                <script>
+                                                    $("#pending-button{{ req.pk }}").show()
+                                                </script>
+                                            {% endif %}
+                                            <button id='cancel-req{{ req.pk }}' class="cancel-bookr">Cancel</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                        {% endif %}
+                    {% endif %}
+
+                    <script>
+                        $("#cancel-req{{ req.pk }}").click(function () {
+                            $.ajax({
+                                type: 'GET',
+                                url: "{% url 'cancel-request' %}",
+                                data: {'reqid':{{ req.pk }}},
+                                success: function (response) {
+                                    $('#received-button{{ req.pk }}').hide();
+                                    $('#pending-button{{ req.pk }}').hide();
+                                    $('#accept-button{{ req.pk }}').hide();
+                                    $('#cancel-req{{ req.pk }}').hide();
+                                    $('#req-guide{{ req.pk }}').text("Request has been cancelled");
+                                }
+                            })
+
+                        })
+                    </script>
+                {% empty %}
+                    <div class="empty-message-req">No requests sent</div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

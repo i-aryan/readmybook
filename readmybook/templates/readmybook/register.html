@@ -1,0 +1,15 @@
+{% extends 'readmybook/base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}Register{% endblock %}
+{% block content%}
+    <div class="form-container mt-5">
+    <form id='register-form' class="form-horizontal" action="" method="post">
+        <span class="display-4">Create account</span>
+        <hr>
+        {% csrf_token %}
+        {{form|crispy}}
+         <button type="submit" class="btn btn-success btn-lg mt-4">Sign Up</button>
+
+    </form>
+</div>
+{% endblock %}

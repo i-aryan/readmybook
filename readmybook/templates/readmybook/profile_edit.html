@@ -1,0 +1,37 @@
+{% extends 'readmybook/base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}{{ user.profile.firstName }} {{ user.profile.lastName }} - readmybook{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="content-box">
+            <form method="post" enctype="multipart/form-data">
+            <div class="row">
+              <div class="col-4">
+                  <img src="{{ user.profile.image.url }}" class="rounded-circle profile-image">
+                  <br>
+                  <div class="profile-img-upload ml-5 mr-2">{{form.image}}</div>
+              </div>
+                <div class="col">
+                    <div class="profile-right-edit">
+                        {% csrf_token %}
+
+                            <div class="form-row">
+                              <div class="form-group col-md-6 ">
+                                {{ form.firstName|as_crispy_field }}
+                              </div>
+                              <div class="form-group col-md-6 ">
+                                {{ form.lastName|as_crispy_field }}
+                              </div>
+                            </div>
+                            {{ form.bio|as_crispy_field }}
+                            {{ form.college|as_crispy_field }}
+                            <button type="submit" class="btn btn-outline-success btn-md mt-5 font-weight-bold">Save Changes</button>
+
+                    </div>
+                </div>
+            </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

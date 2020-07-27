@@ -1,0 +1,12 @@
+{% for usr in users %}
+    <li class="list-group-item list-group-item-action py-2"><a href="{% url 'profile' usr.username %}"><img
+            class="rounded-circle profile-nav-image mr-2" src="{{ usr.profile.image.url }}"></a><a
+            class="gen-search-res-links" href="{% url 'profile' usr.username %}">{{ usr.profile.firstName }} {{ usr.profile.lastName }} ({{ usr.username }})</a></li>
+
+{% endfor %}
+{% for book in booklist %}
+    <li class="list-group-item list-group-item-action py-2"><a href="{% url 'book-page' book.pk %}"><img
+            class="book-search-img mr-2" src="{{ book.image.url }}"></a><a
+            class="gen-search-res-links" href="{% url 'book-page' book.pk %}">{{ book.name}}</a></li>
+
+{% endfor %}

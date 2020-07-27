@@ -1,0 +1,15 @@
+{% extends 'readmybook/base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}Almost Done{% endblock %}
+{% block content%}
+    <div class="form-container mt-5">
+    <form class="form-horizontal" action="" method="post">
+        <span class="display-4">A little about yourself</span>
+        <hr>
+        {% csrf_token %}
+        {{form|crispy}}
+         <button type="submit" class="btn btn-success btn-lg mt-4">Continue</button>
+
+    </form>
+</div>
+{% endblock %}

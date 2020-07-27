@@ -1,0 +1,25 @@
+{% extends 'readmybook/base.html' %}
+{% load static %}
+{% block title %}Welcome - readmybook{% endblock %}
+{% block content %}
+    <div class="container">
+    <div class="content-box">
+    <div class="row">
+        <div class="col-sm">
+            <div class="content-left mt-4">
+                <span class="landing-left-heading"><b>Swap books today!</b></span>
+                <p class="landing-left-content ml-5 mt-4">Hey! <b>readmybook.com</b> is a platform for bookoholics to swap their books for reading with in their college or school. Upload your collection and request a book, that's it!</p>
+                <p class="landing-left-content ml-5 mt-2">Join this growing community of students across India today. Spread the word!</p>
+                <button class="btn-register" onclick="location.href = '{% url 'register' %}'"><b>Register</b></button>
+                <button class="btn-register mt-4" onclick="location.href = '{% url 'login' %}'"><b>Sign in</b></button>
+            </div>
+        </div>
+        <div class="col-sm">
+            <div class="content-right mt-4">
+                <img src="{% static 'readmybook/images/landingimg.jpg' %}" height="420px" width="420px">
+            </div>
+        </div>
+    </div>
+    </div>
+    </div>
+{% endblock %}

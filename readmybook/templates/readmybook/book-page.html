@@ -1,0 +1,166 @@
+{% extends 'readmybook/base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}{{ book.name }}{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-9">
+                <div class="content-box-bookpage">
+                    <div class="heading-box">About the Book</div>
+                    <div class="content-box-bookpage-in">
+                        <div class="row">
+                            <div class="col-4">
+                                <img class="bookpage-image" src="{{ book.image.url }}" alt="">
+                            </div>
+                            <div class="col-8">
+                                <div class="book-page-title">{{ book.name }}</div>
+                                <div class="book-page-author">By {{ book.author }}</div>
+                                <div class="book-page-desc"><p>{{ book.desc }}</p></div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+                <div class="havers-box">
+                    <div class="heading-box">People having this book</div>
+                    <div class="havers-inside-box">
+                        {% for item in booksinDB %}
+                            {% if forloop.last %}
+                                <div class="indi-haverbox">
+                                    <div class="row">
+                                        <div class="col-2">
+                                            <img src="{{ item.owner.profile.image.url }}"
+                                                 class="mb-5 rounded-circle bp-profile-image"
+                                                 alt="">
+                                        </div>
+                                        <div class="col">
+                                            <div class="row">
+                                                <div class="col-9">
+                                                    <div class="bp-haver-name">{{ item.owner.profile.firstName }} {{ item.owner.profile.lastName }}</div>
+                                                    <div class="bp-haver-desc"><p>{{ item.owner.profile.bio }}</p></div>
+                                                </div>
+                                                <div class="col">
+                                                    {% if user.username != item.owner.username %}
+                                                        {% if item.status == "available" %}
+                                                            {% if item.owner.username not in requestedlist %}
+                                                                <button id='requestid{{ item.pk }}'
+                                                                        class="request-book">Request Book
+                                                                </button>
+                                                                <div class="requested-book"
+                                                                     id="requestedbook{{ item.pk }}">
+                                                                    Requested
+                                                                </div>
+                                                                <script>
+                                                                    $("#requestid{{ item.pk }}").click(function () {
+                                                                        $.ajax({
+                                                                            type: 'GET',
+                                                                            url: "{% url 'bookrequested' %}",
+                                                                            data: {
+                                                                                'bookid':{{ item.pk }},
+                                                                                'to_name': '{{ item.owner.username }}'
+                                                                            },
+                                                                            success: function (response) {
+                                                                                $("#requestid{{ item.pk }}").hide();
+                                                                                $("#requestedbook{{ item.pk }}").show();
+                                                                            },
+                                                                            error: function (response) {
+                                                                                console.log("Error occured while requesting")
+                                                                            }
+                                                                        })
+                                                                    })
+                                                                </script>
+                                                            {% else %}
+                                                                <div class="requested-book" id="aldrequested{{ item.pk }}">
+                                                                    Requested
+                                                                </div>
+                                                                <script>
+                                                                    $("#aldrequested{{ item.pk }}").show()
+                                                                </script>
+                                                            {% endif %}
+                                                        {% else %}
+                                                            <div class="bp-unavailable">Unavailable currently</div>
+                                                        {% endif %}
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            {% else %}
+                                <div class="indi-haverbox">
+                                    <div class="row">
+                                        <div class="col-2">
+                                            <img src="{{ item.owner.profile.image.url }}"
+                                                 class="mb-5 rounded-circle bp-profile-image"
+                                                 alt="">
+                                        </div>
+                                        <div class="col">
+                                            <div class="row">
+                                                <div class="col-9">
+                                                    <div class="bp-haver-name">{{ item.owner.profile.firstName }} {{ item.owner.profile.lastName }}</div>
+                                                    <div class="bp-haver-desc">{{ item.owner.profile.bio }}</div>
+                                                </div>
+                                                <div class="col">
+                                                    {% if user.username != item.owner.username %}
+                                                        {% if item.status == "available" %}
+                                                            {% if item.owner.username not in requestedlist %}
+                                                                <button id='requestid{{ item.pk }}'
+                                                                        class="request-book">Request Book
+                                                                </button>
+                                                                <div class="requested-book"
+                                                                     id="requestedbook{{ item.pk }}">
+                                                                    Requested
+                                                                </div>
+                                                                <script>
+                                                                    $("#requestid{{ item.pk }}").click(function () {
+                                                                        $.ajax({
+                                                                            type: 'GET',
+                                                                            url: "{% url 'bookrequested' %}",
+                                                                            data: {
+                                                                                'bookid':{{ item.pk }},
+                                                                                'to_name': '{{ item.owner.username }}'
+                                                                            },
+                                                                            success: function (response) {
+                                                                                $("#requestid{{ item.pk }}").hide();
+                                                                                $("#requestedbook{{ item.pk }}").show();
+                                                                            },
+                                                                            error: function (response) {
+                                                                                console.log("Error occured while requesting")
+                                                                            }
+                                                                        })
+                                                                    })
+                                                                </script>
+                                                            {% else %}
+                                                                <div class="requested-book" id="aldrequested{{ item.pk }}">
+                                                                    Requested
+                                                                </div>
+                                                                <script>
+                                                                    $("#aldrequested{{ item.pk }}").show()
+                                                                </script>
+                                                            {% endif %}
+                                                        {% else %}
+                                                            <div class="bp-unavailable">Unavailable currently</div>
+                                                        {% endif %}
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <hr class="mr-5">
+                            {% endif %}
+                        {% empty %}
+                            Sorry! No user has this book
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

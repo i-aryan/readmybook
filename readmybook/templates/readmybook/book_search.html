@@ -1,0 +1,140 @@
+{% load crispy_forms_tags %}
+<script>
+    $("#addnewbook-container").hide();
+    $("#newbookresult-button").click(function () {
+
+        $("#searchboxid").hide();
+        $("#book-container-noresult").hide();
+        $("#addnewbook-container").show();
+    });
+
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    var csrftoken = getCookie('csrftoken');
+
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+
+    $.ajaxSetup({
+        beforeSend: function (xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+
+    $("#newbookform").submit(function (e) {
+        e.preventDefault();
+        console.log("hey");
+        //var serializedData = $(this).serialize();
+        var formData = new FormData(this);
+        $.ajax({
+            type: 'POST',
+            url: "{% url 'add-new-book' %}",
+            data: formData,
+            success: function (response) {
+                console.log("works finally imma cry");
+                console.log(response);
+                $("#searchboxid").show();
+                $("#addnewbook-container").hide();
+                $("#searchboxid").val(" ");
+            },
+            error: function (response) {
+                console.log("errrororr")
+            },
+            cache: false,
+            contentType: false,
+            processData: false // main thing when uploading files through AJAX (I'm guessing here)
+        })
+    })
+</script>
+
+{% for bookobj in bookslist %}
+    <div id="book-container">
+        <div class="row">
+            <div class="col-2">
+                <img src="{{ bookobj.image.url }}" class="book-thumbnail">
+            </div>
+            <div class="col">
+                <div class="row">
+                    <div class="col-8"><h6><b><span class="book-title">{{ bookobj.name }}</span></b></h6>
+                        <div class="author-name">By {{ bookobj.author }}</div>
+                    </div>
+                    <div class="col">
+                        {% if bookobj.name in blist %}
+                            <span class="book-already-added">Already added</span>
+                        {% else %}
+                            <button data-bookpk="{{ bookobj.pk }}" id="book{{ bookobj.pk }}"
+                                    class="add-book-single btn btn-sm btn-outline-primary font-weight-bold">Add
+                            this</a>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="book-desc">{{ bookobj.desc | truncatechars:350 }}</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $("#book{{ bookobj.pk }}").click(function () {
+
+            $.ajax({
+                type: 'GET',
+                url: "{% url 'add-book' %}",
+                data: {
+                    'bookpk':{{bookobj.pk}}
+                },
+                success: function (response) {
+                    location.reload();
+                },
+                error: function (response) {
+                    alert("Error occured while adding book.")
+                }
+            });
+
+        });
+    </script>
+
+{% empty %}
+    <div id="book-container-noresult">
+        <div class="no-book-result mt-1 text-center"><p align="center">Looks like book with this name does not exist in
+            our database. <br> Would you like to add a new book? </p>
+            <button id="newbookresult-button" class="btn btn-primary btn-sm mb-1 font-weight-bold">Add new book</button>
+        </div>
+    </div>
+
+    <div id="addnewbook-container">
+        <form id='newbookform' class="form-horizontal" action="" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-row">
+                <div class="form-group col-md-6 ">
+                    {{ form.name|as_crispy_field }}
+                </div>
+                <div class="form-group col-md-6 ">
+                    {{ form.author|as_crispy_field }}
+                </div>
+            </div>
+            {{ form.desc | as_crispy_field }}
+            {{ form.image | as_crispy_field }}
+            <button id='newbooksubmit' type="submit" class="btn btn-success btn-md mt-4 font-weight-bold">Submit Book
+                Details
+            </button>
+        </form>
+    </div>
+{% endfor %}
