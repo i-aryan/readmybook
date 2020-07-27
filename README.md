@@ -14,6 +14,6 @@ A platform to facilitate exchanging books within a college/school made using Dja
 ## Bugs?
 I haven't as such encountered any bugs while testing, if you find any feel free to report or send in a push request.
 
-##Future Updates?
+## Future Updates?
 Project is still on-going and a few features like genre search, chatting, suggest edits are left. Also few minor improvisations to current
 features will be there in upcoming updates.
