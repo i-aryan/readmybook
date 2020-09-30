@@ -1,6 +1,35 @@
 # ReadMyBook (ongoing-project)
 A platform to facilitate exchanging books within a college/school made using Django.
 
+## Dependencies
+
+> python 3.8  (recommended)
+
+### Install other dependencies
+
+```console
+$ python -m pip install Django
+```
+
+```console
+$ python -m pip install django-crispy-forms
+```
+
+
+## Run the application
+
+```console
+$ python manage.py makemigrations 
+```
+
+```console
+$ python manage.py migrate 
+```
+
+```console
+$ python manage.py runserver 
+```
+
 ## Features
 * A book collection system consisting 
   * Book Search
