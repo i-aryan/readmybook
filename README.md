@@ -1,4 +1,4 @@
-# ReadMyBook (ongoing-project)
+# ReadMyBook 
 A platform to facilitate exchanging books within a college/school made using Django.
 
 ![Demo Image](https://i.imgur.com/pWAvXZj.jpg)
